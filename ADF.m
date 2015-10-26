@@ -14,7 +14,7 @@ function tstat = ADF(y)
          ,lags(i:len-1,1:i)];
     beta1 = X' * X;
     beta2 = X' * y(i+1:len,1);
-    beta =  inv(beta1) *  beta2
+    beta =  inv(beta1) *  beta2;
     y_hat =  X * beta;
     resid = y(i+1:len) - y_hat;
     RSS  = sum(resid.^2);
@@ -30,7 +30,7 @@ function tstat = ADF(y)
   y_hat_ =  X_ * beta_;
   resid = y(lag+1:len) - y_hat_;
   RSS  = sum(resid.^2);
-  delta_h = beta_(2,1);
+  delta_h = beta(2,1);
   tmp = inv(X_'*X_);
-  tstat = beta_(2,1) / sqrt(var(resid) * tmp(2,2));
+  tstat = (beta(2,1)-1) / sqrt(var(resid) * tmp(2,2));
 end

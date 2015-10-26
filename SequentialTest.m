@@ -16,7 +16,7 @@ function t_val_series = SequentialTest(y,mode,r0)
       if getappdata(h,'canceling')
         break
       end
-      t_val_series(i,1) = WaveletUnitroot(y(1:i),r0);
+      t_val_series(i,1) = WaveletUnitroot(y(1:i),12);
       waitbar(i/times,h,sprintf('now calc..'));
     end
 
@@ -25,7 +25,7 @@ function t_val_series = SequentialTest(y,mode,r0)
       if getappdata(h,'canceling')
         break
       end
-      t_val_series(i,1) = SBWUT(y(1:i),r0);
+      t_val_series(i,1) = SBWUT(y(1:i),12);
       waitbar(i/times,h,sprintf('now calc..'));
     end
 
@@ -34,7 +34,7 @@ function t_val_series = SequentialTest(y,mode,r0)
       if getappdata(h,'canceling')
         break
       end
-      t_val_series(i,1) = SADF(y(1:i)); %now debugging
+      t_val_series(i,1) = ADF(y(1:i)); %now debugging
       waitbar(i/times,h,sprintf('now calc..'));
     end
   otherwise

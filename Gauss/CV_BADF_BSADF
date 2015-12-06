@@ -1,0 +1,125 @@
+/*********************************************************************
+    "Testing for Multiple Bubbles" by Phillips, Shi and Yu (2013a,b)
+    
+    In this program, we calculate the crirical value 
+    sequences for the sup ADF test 
+    (the backward ADF statistic sequence) and the generalized 
+    sup ADF test (the backward SADF statistic sequence) 
+    
+    if flag==1 BADF
+    if flag==2 BSADF
+    
+    written by Shuping Shi @ Macquarie University
+ ********************************************************************/
+ 
+
+new;
+#include ADF_FL.set; 
+//#include ADF_IC.set;
+library  pgraph;
+
+
+date1=date;
+
+flag=1;             @ if flag==1 for BADF and flag==2 for BSADF@
+
+m=2000;             @ Number of Replication @
+T=1680;             @ Sample Size @ 
+r0=0.01+1.8/sqrt(T);
+swindow0=floor(r0*T);     @ Minimum Window Size @
+
+//swindow0=72;
+
+if flag==1;
+   badfs=zeros(m,T);
+elseif flag==2;
+   bsadfs=zeros(m,T);
+endif;
+   
+r2=swindow0;
+do while r2<=T;
+  
+   /******* The data generating process ******/ 
+   rndseed 1;
+   e=rndn(r2,m); 
+   a=r2^(-1);
+   y=cumsumc(e+a);
+   
+   
+   /*********The BADF Test *******************/
+   if flag==1;               @BADF@
+      j=1;
+      do while j<=m; 
+           badfs[j,r2]= ADF_FL(y[.,j],0,1);            @ Fixed lag selection@
+          // badfs[j,r2]= ADF_IC(y[.,j],12,1,2);       @AIC or BIC lag selection@
+           j=j+1;
+      endo;
+      
+  /********The BSADF test *******************/   
+  elseif flag==2;           @BSADF@
+      nroll=r2-swindow0+1;
+      rwadft=zeros(nroll,m); 
+      j=1;
+      do while j<=m;
+         rw=swindow0;
+         do while rw<=r2;
+	         r1=r2-rw+1;
+		     rwadft[rw-swindow0+1,j]= ADF_FL(y[r1:r2,j],0,1);         @Fixed lag selection@
+             //rwadft[rw-swindow0+1,j]= ADF_IC(y[r1:r2,j],12,1,2);    @ AIC or BIC lag selection@
+             rw=rw+1;
+         endo;
+         bsadfs[j,r2]=maxc(rwadft[.,j]);
+	   j=j+1;
+     endo;
+  endif; 
+    
+ 
+ r2=r2+1;
+ endo;
+ 
+date2=date;
+dated=ethsec(date1,date2)/100;
+print "elapse seconds:"; dated;
+
+
+
+qe={0.90,0.95,0.99};
+
+if flag==1;
+   quantile_badfs=quantile(badfs,qe);
+elseif flag==2;
+   quantile_bsadfs=quantile(bsadfs,qe);
+endif;
+
+date2=date;
+dated=ethsec(date1,date2)/100;
+print "elapse seconds:"; dated;
+
+
+badfs=rndn(2000,2000);
+
+if flag==1;
+    xlsWriteM(badfs, "D:\\Dropbox\\Research\\Project_MultipleBubbles\\Program_Feb2014\\Gauss\\CriticalValues\\BADF_1680_90.xlsx","A1",1,"");
+    cv_badfs=qe~quantile_badfs;
+    spreadSheetWrite(cv_badfs, "D:\\Dropbox\\Research\\Project_MultipleBubbles\\Program_Feb2014\\Gauss\\CriticalValues\\CV_BADF_1680_90.xlsx","A1",1);
+    
+    print "=======================================================";
+    print "The critical value sequences for the BADF sequence are :";
+    print qe~quantile_badfs;
+    
+elseif flag==2;
+    spreadSheetWrite(bsadfs, "D:\\Dropbox\\Research\\Project_MultipleBubbles\\Program_Feb2014\\Gauss\\CriticalValues\\BSADF_1680_90.xlsx","A1",1);
+    cv_bsadfs=qe~quantile_bsadfs;
+    spreadSheetWrite(cv_bsadfs, "D:\\Dropbox\\Research\\Project_MultipleBubbles\\Program_Feb2014\\Gauss\\CriticalValues\\CV_BSADF_1680_90.xlsx","A1",1);
+    print "=======================================================";
+    print "The critical value sequences for the BSADF sequence are :";
+    print qe~quantile_bsadfs;
+endif;
+
+
+
+end;
+
+
+
+

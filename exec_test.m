@@ -1,5 +1,3 @@
-addpath('./WTC');
-
 size = 100;
 mu = 0.0375;
 sigma = 0.1574;

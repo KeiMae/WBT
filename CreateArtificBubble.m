@@ -28,8 +28,10 @@ function [artific_bubble, price_f, B]  = CreateArtificBubble( size, mu, sigma, D
   for t = 1 : size - 1
     %collasp bubble?
     if B(t) < alpha
+       delta = 0.5;
       B(t + 1) = (1 + R) * B(t) * u(t+1);
     else
+      delta = delta * 0.9;
       B(t + 1) = (delta + ((1 + R) * theta(t+1) * (B(t) - delta / (1 + R))) / pi) * u(t+1);
     end
   end

@@ -1,0 +1,141 @@
+/*********************************************************************
+    "Testing for Multiple Bubbles" by Phillips, Shi and Yu (2011)
+    
+    In this program, we calculate the sup ADF statistic 
+    (the backward ADF statistic sequence) and the generalized 
+    sup ADF statistic (the backward SADF statistic sequence) 
+ ********************************************************************/
+ 
+
+new;
+#include ADF_FL.set; 
+library  pgraph;
+
+
+nob=1680;    
+load data[nob,1]=D:\Data\SP_DV.txt; 
+
+y=data;
+r0=0.01+1.8/sqrt(nob);
+swindow0=floor(r0*nob);
+
+dim=rows(y)-swindow0+1;
+xy(seqa(1,1,rows(y)),Y);
+
+
+@---------------- The SADF test -----------------@
+adfs_PWY=badf_PWY(y,swindow0);
+sadf=maxc(adfs_PWY);
+print "the sup ADF statistic is"; sadf;
+
+
+@-----------------The GSADF Test ----------------@
+sadfs_PSY=bsadf_PSY(y,swindow0);
+gsadf=maxc(sadfs_PSY);
+print "The generalized sup ADF statistic is"; gsadf;
+
+graphset;
+_plegctl = 1;    
+_plegstr= "sadfs_PSY";
+_plegctl= {2, 5};
+xy(seqa(1,1,dim),sadfs_PSY);
+
+
+
+@------- Plots --------------------------------@
+
+
+begwind;
+window(4,1,0);
+
+setwind(1);
+graphset;
+_plegctl = 1;   
+_plegstr= "Y";   
+          
+_plegctl= {2, 5};
+xy(seqa(1,1,dim),y[swindow0:rows(y)]);
+
+nextwind;
+graphset;
+_plegctl = 1;    
+_plegstr= "adfs_PWY";
+_plegctl= {2, 5};
+xy(seqa(1,1,dim),adfs_PWY);
+
+
+nextwind;
+graphset;
+_plegctl = 1;    
+_plegstr= "sadfs_PSY";
+_plegctl= {2, 5};
+xy(seqa(1,1,dim),sadfs_PSY);
+
+
+nextwind;
+graphset;
+_plegctl = 1;    
+_plegstr= "adfs_Seq_PWY";
+_plegctl= {2, 5};
+xy(seqa(1,1,dim),adfs_seq_PWY);
+
+
+endwind;
+
+
+
+
+
+
+@------------------------------------------------------@
+
+proc BADF_PWY(y,swindow0);
+local r2, i,adfs;
+
+r2=swindow0;
+adfs=zeros(nob-r2+1,1);
+do while r2<=nob;  
+    adfs[r2-swindow0+1]=ADF_FL(y[1:r2,1],0,1);
+    r2=r2+1;
+endo;  
+
+retp(adfs);
+endp;
+
+
+@------------------------------------------------------@
+
+proc BSADF_PSY(y,swindow0);
+local r2,v,j,sadfs,swindow,rw,r1,rwadf,a;
+
+r2=seqa(swindow0,1,nob-swindow0+1);
+v=1;
+sadfs=zeros(rows(r2),1);
+do while v<=rows(r2);
+   swindow=seqa(swindow0,1,r2[v,1]-swindow0+1);
+   rwadf=zeros(rows(swindow),cols(y));    
+   j=1;
+   do while j<=rows(swindow);
+      rw=swindow[j,1];
+      r1=r2[v,1]-rw+1;
+      rwadf[j,.]=ADF_FL(y[r1:r2[v,1],.],0,1);
+      j=j+1;
+   endo;
+   sadfs[v,1]=maxc(rwadf);
+   v=v+1;
+
+ if v==273-40+1;
+
+    a=seqa(1,1,v);
+
+    print a~rwadf;
+endif;
+
+endo; 
+
+
+
+retp(sadfs);
+endp;
+
+

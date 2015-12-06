@@ -19,9 +19,13 @@ function [sup_t, tvals] = SWUT(y, r0, moder0)
         quit;
     end
     tvals = zeros(len,1);
+    ys = nan(len,len-init);
+    
     for i =  init:len
-        tvals(i,1) = -1/WaveletUnitroot(y(1:i,1),12,'haar',1,'raw');
-        %tvals(i,1) = WaveletUnitroot(y(1:i,1),12,'haar',1,'raw');
+        ys(1:i,i-init+1) = y(1:i,1);
     end
-    sup_t=max(tvals(init:len));
+    cell = mat2cell(ys,len,ones(1,len-init+1));
+    tvals = cellfun(@InvFG,cell);
+
+    sup_t=max(tvals);
 end

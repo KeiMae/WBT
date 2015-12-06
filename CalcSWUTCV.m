@@ -1,4 +1,4 @@
-function CVs = CalcSWUTCV(len, to, r0, mode)
+function [cv1, cv5 ,cv10]= CalcSWUTCV(len, to, r0, mode)
     CVs = zeros(1,3);
     TIMES = 2000;
     w = CreateAR1(len,1,0,TIMES);

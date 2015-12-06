@@ -18,15 +18,21 @@ function [Sup_t, tvals, CVs]  = SBWUT(tseries , r0, mode)
     CVs = zeros(len,3);
     h = waitbar(0,'SBWUT');
     for i = init:len
+        ts = nan(len,i-init+1);
         for s = 1 : i-init+1
-            tvals_(s,1) = -1/ WaveletUnitroot(tseries(s:i),12,'haar',1,'raw'); 
-            %tvals_(s,1) = WaveletUnitroot(tseries(s:i),12,'haar',1,'raw');  
+           ts(s:i,s) = tseries(s:i);
         end
-        tvals(i,1) = max(tvals_(1:i-init+1,1));
-        CV = CalcSWUTCV(len, i, r0, mode);
-        CVs(i,1) = CV(1,1); %1%
-        CVs(i,2) = CV(1,2); %5%
-        CVs(i,3) = CV(1,3); %10%
+        cell = mat2cell(ts,len,ones(1,i-init+1));
+        tvals_ = cellfun(@InvFG,cell);
+        %for s = 1 : i-init+1
+        %tvals_(s,1) = -1/ WaveletUnitroot(tseries(s:i),12,'haar',1,'raw'); 
+            %tvals_(s,1) = WaveletUnitroot(tseries(s:i),12,'haar',1,'raw');  
+        %end
+        tvals(i,1) = max(tvals_);
+        [CVs(i,1),CVs(i,2),CVs(i,3)] = CalcSWUTCV(len, i, r0, mode);
+        %CVs(i,1) = CV(1,1); %1%
+        %CVs(i,2) = CV(1,2); %5%
+        %CVs(i,3) = CV(1,3); %10%
         %CVs=[0,0,0];
         waitbar(i/len,h);        
     end

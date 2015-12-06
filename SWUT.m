@@ -18,7 +18,6 @@ function [sup_t, tvals] = SWUT(y, r0, moder0)
         warning('mode need "rate" or "real".');
         quit;
     end
-    tvals = zeros(len,1);
     ys = nan(len,len-init);
     
     for i =  init:len

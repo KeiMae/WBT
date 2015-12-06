@@ -2,8 +2,8 @@ function stat = WaveletUnitroot(tseries,kernel,wname,scal,mode)
   if nargin == 1
       wname = 'haar';
       scal = 1 ;
-      kernel = 10;
-      mode = 'detreand';
+      kernel = 12;
+      mode = 'row';
   end
   if nargin == 2
       wname = 'haar';
@@ -31,7 +31,7 @@ function stat = WaveletUnitroot(tseries,kernel,wname,scal,mode)
     %OLS
     X = zeros(length(tseries),1);
     X(2:length(tseries),1) = tseries(1:length(tseries)-1);
-    beta = inv(X' * X) * (X' * tseries(1:length(tseries)));
+    beta = (X' * X)\(X' * tseries(1:length(tseries)));
     y_hat = X * beta;
     u = tseries - y_hat;
     gamma_0 = ((u - mean(u))' * (u - mean(u))) / length(u);

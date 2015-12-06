@@ -27,7 +27,7 @@ function [Sup_t, tvals, CVs]  = SBWUT(tseries , r0, mode)
         CVs(i,1) = CV(1,1); %1%
         CVs(i,2) = CV(1,2); %5%
         CVs(i,3) = CV(1,3); %10%
-        CVs=[0,0,0];
+        %CVs=[0,0,0];
         waitbar(i/len,h);        
     end
     Sup_t = max(tvals(init:len));

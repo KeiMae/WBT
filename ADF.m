@@ -1,6 +1,6 @@
 function [tstat, delta_h, BIC] = ADF(y)
   len = length(y);
-  Max_lags = 12;
+  Max_lags = 2;
   BICs = zeros(Max_lags-1,1);
   const =  ones(len,1);
   ydiff = diff(y);

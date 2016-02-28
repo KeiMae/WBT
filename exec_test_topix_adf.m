@@ -1,6 +1,6 @@
 %% data input and SADF
 data = dlmread('../data/topix7302_1510.csv',',',1,0);
-TOPIX = data(1:512,4);
+TOPIX = data(:,5);
 [supt ,tvals_adf,CVs_adf] = GSADF(log(TOPIX),36,'real');
 csvwrite('./outputdata/topix_adf.csv',[tvals_adf, CVs_adf]);
 %% output result
@@ -26,3 +26,14 @@ legend('SADF','10%','Location','south');
 set(gca,'xTick',labs,'xtickLabel',day,'FontSize',15);
 xlim([1,length(TOPIX)]);
 saveas(figure(2),'pictures/article/topixadf.jpg')
+
+
+
+%% data input 
+data = dlmread('../data/topix7302_1510.csv',',',1,0);
+TOPIX = data(:,4);
+dataD = dlmread('../data/dividend7302_1510.csv',',',1,0);
+DIV = dataD(:,4);
+div = 1./DIV*100;
+[supt ,tvals_adf,~] = GSADF(log(TOPIX/div),36,'real');
+csvwrite('./outputdata/topix_dvi_adf.csv',tvals_adf);

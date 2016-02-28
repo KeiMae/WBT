@@ -1,6 +1,6 @@
 %%
 FXdata = dlmread('../data/FX7302_1510.csv',',',1,0);
-FX = FXdata(:,2);
+FX = FXdata(:,3);
 PPIdata = dlmread('../data/PPI_7302_1510.csv',',',1,0);
 PPIJPN = PPIdata(:,2);
 PPIUSA = PPIdata(:,3);

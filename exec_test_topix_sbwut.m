@@ -1,6 +1,6 @@
 data = dlmread('../data/topix7302_1510.csv',',',1,0);
-TOPIX = data(:,4);
-[supt_swut ,tvals_swut, CVs_swut] = SBWUT(TOPIX,36,'real');
+TOPIX = data(:,5);
+[supt_swut ,tvals_swut, CVs_swut] = WBT(TOPIX,36,'real');
 csvwrite('./outputdata/topix_swut.csv',[tvals_swut, CVs_swut]);
 
 %%
